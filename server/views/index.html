@@ -1,0 +1,363 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MongoDB Search App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+
+        h1, h2 {
+            margin-bottom: 10px;
+        }
+
+        form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input, select {
+            padding: 8px;
+            margin-bottom: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>MongoDB Search App</h1>
+
+    <form id="operationForm">
+        <label for="operation">Choose Operation:</label>
+        <select id="operation" name="operation">
+            <option value="search">Search</option>
+            <option value="add">Add Member</option>
+        </select>
+
+        <div id="searchFormContainer">
+            <label for="name">Search by Name:</label>
+            <input type="text" id="name" name="name">
+            <button type="submit">Search</button>
+        </div>
+
+        <div id="addMemberFormContainer" style="display: none;">
+            <label for="newName">Name:</label>
+            <input type="text" id="newName" name="newName" required>
+
+            <label for="newCity">City:</label>
+            <input type="text" id="newCity" name="newCity" required>
+
+            <label for="newEducation">Education:</label>
+            <input type="text" id="newEducation" name="newEducation" required>
+
+            <label for="newYear">Year:</label>
+            <input type="text" id="newYear" name="newYear" required>
+
+            <label for="newAge">Age:</label>
+            <input type="text" id="newAge" name="newAge" required>
+
+           
+
+            <button type="submit">Add Member</button>
+        </div>
+    </form>
+
+    <h2>Search Result</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>City</th>
+                <th>Education</th>
+                <th>Year</th>
+                <th>Age</th>
+            </tr>
+        </thead>
+        <tbody id="searchResults"></tbody>
+    </table>
+
+    <script>
+        document.getElementById('operationForm').addEventListener('change', function () {
+            const operation = document.getElementById('operation').value;
+            const searchFormContainer = document.getElementById('searchFormContainer');
+            const addMemberFormContainer = document.getElementById('addMemberFormContainer');
+
+            if (operation === 'search') {
+                searchFormContainer.style.display = 'block';
+                addMemberFormContainer.style.display = 'none';
+            } else if (operation === 'add') {
+                searchFormContainer.style.display = 'none';
+                addMemberFormContainer.style.display = 'block';
+            }
+        });
+
+        document.getElementById('operationForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const operation = document.getElementById('operation').value;
+
+            if (operation === 'search') {
+                const name = document.getElementById('name').value;
+
+                try {
+                    const response = await fetch(`/search?name=${encodeURIComponent(name)}`);
+                    const data = await response.json();
+
+                    displaySearchResults(data);
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
+            } else if (operation === 'add') {
+                const newName = document.getElementById('newName').value;
+                const newCity = document.getElementById('newCity').value;
+                const newEducation = document.getElementById('newEducation').value;
+                const newYear = document.getElementById('newYear').value;
+                const newAge = document.getElementById('newAge').value;
+
+                // Add other variables for member details
+
+                try {
+                    const response = await fetch('/add-member', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            name: newName,
+                            city: newCity,
+                            education: newEducation,
+                            year: newYear,
+                            age: newAge,
+                            // Add other fields as needed
+                        }),
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert('Member added successfully');
+                        // Optionally, you can update the search results or perform other actions.
+                    } else {
+                        alert('Error adding member: ' + data.message);
+                    }
+                } catch (error) {
+                    console.error('Error adding member:', error);
+                }
+            }
+        });
+
+        function displaySearchResults(data) {
+            const resultsContainer = document.getElementById('searchResults');
+            resultsContainer.innerHTML = data.map(item => `
+                <tr>
+                    <td>${item.NAME}</td>
+                    <td>${item.CITY}</td>
+                    <td>${item.EDUCATION}</td>
+                    <td>${item.YEAR}</td>
+                    <td>${item.AGE}</td>
+                </tr>
+            `).join('');
+        }
+    </script>
+</body>
+</html> -->
+<!-- views/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MongoDB Search App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+
+        h1, h2 {
+            margin-bottom: 10px;
+        }
+
+        form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input, select {
+            padding: 8px;
+            margin-bottom: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>MongoDB Search App</h1>
+
+    <form id="operationForm">
+        <label for="operation">Choose Operation:</label>
+        <select id="operation" name="operation">
+            <option value="search">Search</option>
+            <option value="add">Add Member</option>
+        </select>
+
+        <div id="searchFormContainer">
+            <label for="name">Search by Name:</label>
+            <input type="text" id="name" name="name">
+            <button type="submit">Search</button>
+        </div>
+
+        <div id="addMemberFormContainer" style="display: none;">
+            <label for="newName">Name:</label>
+            <input type="text" id="newName" name="newName" required>
+
+            <label for="newCity">City:</label>
+            <input type="text" id="newCity" name="newCity" required>
+
+            <label for="newEducation">Education:</label>
+            <input type="text" id="newEducation" name="newEducation" required>
+
+            <label for="newYear">Year:</label>
+            <input type="text" id="newYear" name="newYear" required>
+
+            <label for="newAge">Age:</label>
+            <input type="text" id="newAge" name="newAge" required>
+
+            <button type="submit">Add Member</button>
+        </div>
+    </form>
+
+    <h2>Search Result</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>City</th>
+                <th>Education</th>
+                <th>Year</th>
+                <th>Age</th>
+            </tr>
+        </thead>
+        <tbody id="searchResults"></tbody>
+    </table>
+
+    <script>
+        document.getElementById('operationForm').addEventListener('change', function () {
+            const operation = document.getElementById('operation').value;
+            const searchFormContainer = document.getElementById('searchFormContainer');
+            const addMemberFormContainer = document.getElementById('addMemberFormContainer');
+
+            if (operation === 'search') {
+                searchFormContainer.style.display = 'block';
+                addMemberFormContainer.style.display = 'none';
+            } else if (operation === 'add') {
+                searchFormContainer.style.display = 'none';
+                addMemberFormContainer.style.display = 'block';
+            }
+        });
+
+        document.getElementById('operationForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const operation = document.getElementById('operation').value;
+
+            if (operation === 'search') {
+                const name = document.getElementById('name').value;
+
+                try {
+                    const response = await fetch(`/search?name=${encodeURIComponent(name)}`);
+                    const data = await response.json();
+
+                    displaySearchResults(data);
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
+            } else if (operation === 'add') {
+                const newName = document.getElementById('newName').value;
+                const newCity = document.getElementById('newCity').value;
+                const newEducation = document.getElementById('newEducation').value;
+                const newYear = document.getElementById('newYear').value;
+                const newAge = document.getElementById('newAge').value;
+
+                try {
+                    const response = await fetch('/add-member', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            name: newName,
+                            city: newCity,
+                            education: newEducation,
+                            year: newYear,
+                            age: newAge,
+                        }),
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert('Member added successfully');
+                    } else {
+                        alert('Error adding member: ' + data.message);
+                    }
+                } catch (error) {
+                    console.error('Error adding member:', error);
+                }
+            }
+        });
+
+        function displaySearchResults(data) {
+            const resultsContainer = document.getElementById('searchResults');
+            resultsContainer.innerHTML = data.map(item => `
+                <tr>
+                    <td>${item.NAME}</td>
+                    <td>${item.CITY}</td>
+                    <td>${item.EDUCATION}</td>
+                    <td>${item.YEAR}</td>
+                    <td>${item.AGE}</td>
+                </tr>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
+
